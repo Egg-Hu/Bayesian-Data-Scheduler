@@ -152,7 +152,7 @@ for poison_ratio in $(seq 0.1 0.1 0.1); do
         --use_wandb $WANDB_API_KEY
 
     # #For alpaca_eval
-    # export OPENAI_API_KEY=******REMOVED******proj-tK2LOpREXMgRV4OLSzyPZaFA9Y3c3kyYaPHsZiUd1N8XEET9JfiPt0cFDTwH-2JbDtZaxFggEyT3BlbkFJF-FigdF4qQ4gVvU-uTSUOuU4kC1btfUaewvVJ_NJK3XnKAx-rW_MQG5xSOLgsqIGG49ah69ecA
+    # export OPENAI_API_KEY=placeholder
     # CUDA_VISIBLE_DEVICES=$GPU_ID alpaca_eval \
     #     --model_outputs $WORK_DIR/alpaca_steps/all.json \
     #     --annotators_config 'alpaca_eval_gpt4_turbo_fn'
