@@ -1,0 +1,305 @@
+Metadata-Version: 2.4
+Name: bds
+Version: 1.0.0
+Summary: BDS: Adaptive Defense against Harmful Fine-Tuning for Large Language Models via Bayesian Data Scheduler.
+Classifier: Programming Language :: Python :: 3
+Classifier: Environment :: GPU :: NVIDIA CUDA
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: System :: Distributed Computing
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-python
+Dynamic: summary
+
+# BDS: Bayesian Data Scheduler
+
+BDS (Bayesian Data Scheduler) is an adaptive defense framework against harmful fine-tuning for Large Language Models. It implements a novel approach to data selection and training that enhances safety during the fine-tuning process.
+
+## 📋 Table of Contents
+
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Usage Examples](#usage-examples)
+- [Analysis Tools](#analysis-tools)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+
+## 🚀 Installation
+
+### Environment Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd bds
+   ```
+
+2. **Create a virtual environment**
+   ```bash
+   conda create -n bds python=3.10
+   conda activate bds
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   pip install -e .
+   ```
+
+## ⚙️ Configuration
+
+### 1. Create Configuration File
+
+Copy the example configuration file and modify it with your settings:
+
+```bash
+cp run/scripts/config.sh my_config.sh
+```
+
+### 2. Edit Configuration
+
+Edit `my_config.sh` with your actual values:
+
+```bash
+# API Keys and Tokens
+export HUGGINGFACE_TOKEN="your_huggingface_token_here"
+export WANDB_API_KEY="your_wandb_api_key_here"
+export WANDB_PROJECT="your_project_name"
+
+# Paths
+export PREFIX_DIR="/path/to/your/bds/project"
+
+# GPU Configuration
+export GPU_ID="0"
+export CUDA_VISIBLE_DEVICES="0"
+
+# Model Configuration
+export MODEL_PATH="meta-llama/Llama-2-7b-hf"
+```
+
+### 3. Environment Variables
+
+The configuration file contains the following variables:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `HUGGINGFACE_TOKEN` | Your Hugging Face API token | `hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
+| `WANDB_API_KEY` | Your Weights & Biases API key | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
+| `WANDB_PROJECT` | Project name for wandb logging | `bds` |
+| `PREFIX_DIR` | Path to your BDS project | `/path/to/your/bds` |
+| `GPU_ID` | GPU device ID to use | `0` |
+| `CUDA_VISIBLE_DEVICES` | CUDA devices to use | `0` |
+| `MODEL_PATH` | Base model path | `meta-llama/Llama-2-7b-hf` |
+
+## 🏃 Quick Start
+
+### 1. Basic Training
+
+Run the main training script:
+
+```bash
+cd run/scripts
+chmod +x 0_train_dbs.sh
+./0_train_dbs.sh
+```
+
+### 2. Custom Training
+
+You can customize training parameters by modifying the script or setting environment variables:
+
+```bash
+export NEW_DATASET=sst2
+export MAX_SAMPLES=1000
+export GPU_ID=0
+./0_train_dbs.sh
+```
+
+## 📁 Project Structure
+
+```
+bds/
+├── analysis/                    # Analysis and visualization tools
+│   ├── mountain_range_plotter.py    # Mountain Range visualization
+│   ├── score_analyzer.py           # Score analysis
+│   └── llama2guard_analyzer.py     # LlamaGuard analysis
+├── bds/                        # Core BDS package
+│   ├── datasets/               # Dataset classes
+│   ├── models/                 # Model definitions
+│   ├── trainer/                # Training logic
+│   └── utils/                  # Utilities
+├── run/                        # Run scripts and datasets
+│   ├── scripts/                # Training scripts
+│   │   ├── config.sh           # Configuration template
+│   │   ├── 0_train_dbs.sh      # Main training script
+│   │   └── datasets/           # Dataset files
+│   ├── sst2/                   # SST-2 dataset scripts
+│   ├── alpaca/                 # Alpaca dataset scripts
+│   ├── gsm8k/                  # GSM8K dataset scripts
+│   ├── agnews/                 # AG News dataset scripts
+│   └── poison/                 # Poison evaluation scripts
+├── requirements.txt            # Python dependencies
+└── setup.py                   # Package setup
+```
+
+## 💡 Usage Examples
+
+### Training a Data Scheduler
+
+```bash
+# Basic training
+./0_train_dbs.sh
+
+# With custom parameters
+export NEW_DATASET=sst2
+export MAX_SAMPLES=1000
+export MAX_NEW_SAMPLES=1000
+export UPPERLEVEL_WEIGHT=-4
+./0_train_dbs.sh
+```
+
+### Running Analysis Tools
+
+```bash
+# Score analysis
+python analysis/score_analyzer.py --path /path/to/checkpoint
+
+# Mountain range visualization
+python analysis/mountain_range_plotter.py --path /path/to/checkpoint --step 100 --flag all
+
+# LlamaGuard analysis
+python analysis/llama2guard_analyzer.py
+```
+
+### Custom Dataset Training
+
+1. **Prepare your dataset** in JSON format
+2. **Place it** in `run/scripts/datasets/`
+3. **Update the script** to use your dataset:
+
+```bash
+export NEW_DATASET=your_dataset_name
+./0_train_dbs.sh
+```
+
+## 🔧 Analysis Tools
+
+### 1. Score Analyzer (`analysis/score_analyzer.py`)
+
+Analyzes and processes scoring data from training checkpoints.
+
+**Usage:**
+```bash
+python analysis/score_analyzer.py --path /path/to/checkpoint --transformation softmax
+```
+
+**Parameters:**
+- `--path`: Path to the checkpoint directory
+- `--transformation`: Transformation type (softmax, linear, etc.)
+
+### 2. Mountain Range Plotter (`analysis/mountain_range_plotter.py`)
+
+Creates Mountain Range style visualizations of training progress.
+
+**Usage:**
+```bash
+python analysis/mountain_range_plotter.py --path /path/to/checkpoint --step 100 --flag all
+```
+
+**Parameters:**
+- `--path`: Path to the checkpoint directory
+- `--step`: Step size for visualization
+- `--flag`: Data filter (all, ft, harmful)
+- `--transformation`: Transformation type
+
+### 3. LlamaGuard Analyzer (`analysis/llama2guard_analyzer.py`)
+
+Analyzes model outputs using LlamaGuard for safety evaluation.
+
+**Usage:**
+```bash
+python analysis/llama2guard_analyzer.py
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Missing environment variables**
+   - Ensure all required variables are set in your config file
+   - Check that the config file is in the correct location
+
+2. **GPU memory issues**
+   - Reduce batch size in the training script
+   - Use gradient checkpointing
+   - Check GPU memory usage
+
+3. **Import errors**
+   - Ensure all dependencies are installed: `pip install -r requirements.txt`
+   - Check Python path: `export PYTHONPATH=$PREFIX_DIR`
+
+4. **Permission errors**
+   - Make scripts executable: `chmod +x *.sh`
+   - Check file permissions
+
+### Getting Help
+
+- Check the logs in `{WORK_DIR}/log/log.log`
+- Verify your environment variables with the configuration checker
+- Ensure all dependencies are installed correctly
+
+## 📊 Monitoring and Logging
+
+The training process supports Weights & Biases integration for monitoring:
+
+- **Metrics tracking**: Loss curves, accuracy, and other training metrics
+- **Model artifacts**: Checkpoints and model weights
+- **Visualization**: Training progress and analysis results
+
+To enable wandb logging, set your `WANDB_API_KEY` in the configuration file.
+
+## 🔬 Advanced Usage
+
+### Custom Model Training
+
+To train with a different base model:
+
+1. Update `MODEL_PATH` in your config file
+2. Ensure the model is compatible with the training script
+3. Adjust training parameters if needed
+
+### Multi-GPU Training
+
+For multi-GPU training:
+
+1. Set `CUDA_VISIBLE_DEVICES` to include multiple GPUs
+2. Adjust batch size accordingly
+3. Use appropriate distributed training settings
+
+## 🤝 Contributing
+
+We welcome contributions! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Thanks to the Hugging Face team for the transformers library
+- Thanks to the Weights & Biases team for the logging platform
+- Thanks to the PyTorch team for the deep learning framework
+
+---
+
+For more detailed information, please refer to the individual script documentation or contact the maintainers.
