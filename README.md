@@ -1,4 +1,4 @@
-# [NeurIPS 2025] Adaptive Defense against Harmful Fine-Tuning for Large Language Models via Bayesian Data Scheduler
+# [NeurIPS 2025 Spotlight] Adaptive Defense against Harmful Fine-Tuning for Large Language Models via Bayesian Data Scheduler
 
 
 BDS (Bayesian Data Scheduler) is an adaptive defense framework against harmful fine-tuning for Large Language Models (LLMs). It implements a novel approach to data scheduler that enhances safety during the fine-tuning process.
