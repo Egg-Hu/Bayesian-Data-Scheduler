@@ -1,4 +1,4 @@
-# [NeurIPS 2025 Spotlight] Adaptive Defense against Harmful Fine-Tuning for Large Language Models via Bayesian Data Scheduler 
+# [NeurIPS 2025 Spotlight 🔥] Adaptive Defense against Harmful Fine-Tuning for Large Language Models via Bayesian Data Scheduler 
 
 📄 **Paper**: [arXiv](https://arxiv.org/pdf/2510.27172)
 
